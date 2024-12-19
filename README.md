@@ -91,3 +91,6 @@ This Flask application serves climate data via a RESTful API. The endpoints incl
 
 + Stats (Start and End Date): http://127.0.0.1:5000/api/v1.0/01012017/12312017
 
+## Credits -->
+Special thanks to my instructor and xpert for providing guidance and support throughout the project.
+
