@@ -45,8 +45,8 @@ def Welcome():
         f"/api/v1.0/precipitation<br/>"
         f"/api/v1.0/stations<br/>"
         f"/api/v1.0/tobs<br/>"
-        f"/api/v1.0/temp/start<br/>"
-        f"/api/v1.0/temp/start/end<br/>"
+        f"/api/v1.0/<start><br/>"
+        f"/api/v1.0/<start>/<end><br/>"
         f"<p>'start' and 'end' date should be in the format MMDDYYYY.<p>"
 
     )
@@ -58,7 +58,7 @@ def precipitation():
     a_year_before = dt.date(2017, 8, 23) - dt.timedelta(days=365)
 
     # Perform a query to retrieve the data and precipitation scores
-    date_prcp_scores = session.query(Measurement.date, Measurement.prcp).\
+    precipitation = session.query(Measurement.date, Measurement.prcp).\
     filter(Measurement.date >= a_year_before).all()
     
     session.close()
@@ -67,10 +67,53 @@ def precipitation():
     precip = {date: prcp for date, prcp in precipitation}
     return jsonify(precip)
 
+session.close()
+
 @app.route("/api/v1.0/stations")
 def stations():
-    """Return a list of Stations"""
-    station_results = session.query(Station.station).all()
+    # Query all stations
+    results = session.query(Station.station).all()
+    
+    # Convert list of tuples into normal list
+    stations_list = [station[0] for station in results]
+    return jsonify(stations_list)
 
-    session.close()
+session.close()
 
+@app.route("/api/v1.0/tobs")
+def tobs():
+    # Calculate the date one year ago from the last data point
+    most_recent_date = session.query(func.max(Measurement.date)).first()[0]
+    a_year_before = dt.datetime.strptime(most_recent_date, '%Y-%m-%d') - dt.timedelta(days=365)
+
+    # Query temperature observations for the most active station for the last year
+    results = session.query(Measurement.tobs).\
+        filter(Measurement.station == 'USC00519281').\
+        filter(Measurement.date >= a_year_before).all()
+    
+    # Convert list of tuples into normal list
+    tobs_list = [temp[0] for temp in results]
+    return jsonify(tobs_list)
+
+session.close()
+
+@app.route("/api/v1.0/<start>")
+@app.route("/api/v1.0/<start>/<end>")
+def stats(start, end=None):
+    sel = [func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)]
+
+    if not end:
+        # Calculate TMIN, TAVG, TMAX for all dates greater than or equal to the start date
+        results = session.query(*sel).filter(Measurement.date >= start).all()
+    else:
+        # Calculate TMIN, TAVG, TMAX for dates between the start and end date inclusive
+        results = session.query(*sel).filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+
+    # Convert list of tuples into normal list
+    temp_stats = list(np.ravel(results))
+    return jsonify(temp_stats)
+
+session.close()
+
+if __name__ == "__main__":
+    app.run(debug=True)
