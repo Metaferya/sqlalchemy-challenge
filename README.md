@@ -51,5 +51,43 @@ Visualizes precipitation and temperature data using Matplotlib.
 
 2.Launch Jupyter Notebook.
 
-3. Open Climate_Analysis.ipynb and run the cells sequentially.
+3.Open Climate_Analysis.ipynb and run the cells sequentially.
+
+# Part 2: Flask API
+
+## File: app.py
+
+This Flask application serves climate data via a RESTful API. The endpoints include:
+
+* /: Lists all available routes.
+
+* /api/v1.0/precipitation: Returns precipitation data for the last 12 months.
+
+* /api/v1.0/stations: Returns a list of all stations.
+
+* /api/v1.0/tobs: Returns temperature observations for the most active station over the last 12 months.
+
+* /api/v1.0/<start>: Returns minimum, average, and maximum temperatures for dates greater than or equal to the start date in MMDDYYYY format.
+
+* /api/v1.0/<start>/<end>: Returns minimum, average, and maximum temperatures for the date range specified in MMDDYYYY format.
+
+**How to Run**
+
+1.Open a terminal and navigate to the repository directory.
+
+2.Run the Flask application.
+
+3.Open a web browser and navigate to the following URLs to test the endpoints:
+
++ Home: http://127.0.0.1:5000/
+
++ Precipitation: http://127.0.0.1:5000/api/v1.0/precipitation
+
++ Stations: http://127.0.0.1:5000/api/v1.0/stations
+
++ Temperature Observations: http://127.0.0.1:5000/api/v1.0/tobs
+
++ Stats (Start Date): http://127.0.0.1:5000/api/v1.0/01012017
+
++ Stats (Start and End Date): http://127.0.0.1:5000/api/v1.0/01012017/12312017
 
