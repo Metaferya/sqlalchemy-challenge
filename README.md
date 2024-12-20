@@ -87,9 +87,9 @@ This Flask application serves climate data via a RESTful API. The endpoints incl
 
 + Temperature Observations: http://127.0.0.1:5000/api/v1.0/tobs
 
-+ Stats (Start Date): http://127.0.0.1:5000/api/v1.0/01012017
++ Stats (Start Date): http://127.0.0.1:5000/api/v1.0/temp/start
 
-+ Stats (Start and End Date): http://127.0.0.1:5000/api/v1.0/01012017/12312017
++ Stats (Start and End Date): http://127.0.0.1:5000/api/v1.0//temp/start/end
 
 ## Credits -->
 Special thanks to my instructor and xpert for providing guidance and support throughout the project.
